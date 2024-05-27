@@ -6,30 +6,78 @@ headers = {
 
 
 class MapleInfo:
-    def __init__(self, characterName=None):
-        self.ocid = self.getOcid(characterName)
+    def __init__(self, name=None, date=None):
+        self.setInfo(name, date)
 
-    def getOcid(self, characterName=None):
-        if characterName == None: return None
-        self.characterName = characterName
-        urlString = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + characterName
+    def setInfo(self, name=None, date=None):
+        self.ocid = self.setOcid(name)
+        if self.ocid == None:
+            pass
+        self.basic = self.setBasic(self.ocid, date)
+        self.stat = self.setStat(self.ocid, date)
+        self.hyperStat = self.setHyperStat(self.ocid, date)
+        self.ability = self.setAbility(self.ocid, date)
+
+    def setOcid(self, name=None):
+        if name == None: return None
+        self.name = name
+        urlString = "https://open.api.nexon.com/maplestory/v1/id?character_name=" + name
         response = requests.get(urlString, headers=headers)
+
+        if response.status_code != 200:
+            print("존재하지 않는 캐릭터명입니다.")
+            return None
 
         return response.json()['ocid']
 
-    def getBasicInfo(self, ocid=None, date=None):
+    def setBasic(self, ocid=None, date=None):
         if ocid == None:
             return None
         urlString = "https://open.api.nexon.com/maplestory/v1/character/basic?ocid=" + ocid
         if date != None:
             urlString += "&date=" + date
         response = requests.get(urlString, headers=headers)
-        self.basicInfo = response.json()
+        self.basic = response.json()
 
-        return self.basicInfo
+        return self.basic
+
+    def setStat(self, ocid=None, date=None):
+        if ocid == None:
+            return None
+        urlString = "https://open.api.nexon.com/maplestory/v1/character/stat?ocid=" + ocid
+        if date != None:
+            urlString += "&date=" + date
+        response = requests.get(urlString, headers=headers)
+        self.stat = response.json()
+
+        return self.stat
+
+    def setHyperStat(self, ocid=None, date=None):
+        if ocid == None:
+            return None
+        urlString = "https://open.api.nexon.com/maplestory/v1/character/hyper-stat?ocid=" + ocid
+        if date != None:
+            urlString += "&date=" + date
+        response = requests.get(urlString, headers=headers)
+        self.hyperStat = response.json()
+
+        return self.hyperStat
+
+    def setAbility(self, ocid=None, date=None):
+        if ocid == None:
+            return None
+        urlString = "https://open.api.nexon.com/maplestory/v1/character/ability?ocid=" + ocid
+        if date != None:
+            urlString += "&date=" + date
+        response = requests.get(urlString, headers=headers)
+        self.ability = response.json()
+
+        return self.ability
 
 
 c1 = MapleInfo("아델")
-c1.getBasicInfo(c1.ocid, '2024-01-01')
 
-print(c1.basicInfo)
+print(c1.basic)
+print(c1.stat)
+print(c1.hyperStat)
+print(c1.ability)
