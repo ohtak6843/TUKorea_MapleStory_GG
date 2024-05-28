@@ -14,7 +14,7 @@ class TitleGUI:
         # 배경 이미지 로드 및 출력
         self.tempImage = Image.open("image/title_image.png")
         self.tempImage = self.tempImage.resize((self.xSize, self.ySize), Image.LANCZOS)
-        self.titleImage = ImageTk.PhotoImage(self.tempImage)
+        self.titleImage = ImageTk.PhotoImage(self.tempImage, master=self.window)
         self.label = Label(self.window, image=self.titleImage)
         self.label.pack()
 

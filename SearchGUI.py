@@ -118,12 +118,13 @@ class SearchGUI:
         self.nameLabel.configure(text="이름: " + self.mapleInfo.name)
         self.levelLabel.configure(text="레벨: " + str(self.mapleInfo.basic['character_level']))
         self.serverLabel.configure(text="서버: " + self.mapleInfo.basic['world_name'])
-        """url = self.mapleInfo.basic['character_image']
+
+        url = self.mapleInfo.basic['character_image']
         with urllib.request.urlopen(url) as u:
             raw_data = u.read()
         im = Image.open(BytesIO(raw_data))
-        image = ImageTk.PhotoImage(im)
-        self.cImageLabel.configure(image=image)"""
+        image = ImageTk.PhotoImage(im, master=self.window)
+        self.cImageLabel.configure(image=image)
 
         self.statInfo()
         self.hyperStatInfo()
