@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import font
 from PIL import ImageTk, Image
-
+from SearchGUI import *
 
 class TitleGUI:
     xSize = 800
@@ -29,7 +29,7 @@ class TitleGUI:
         self.window.mainloop()
 
     def pressedBMain(self):
-        pass
+        SearchGUI()
 
     def pressedBMap(self):
         pass
