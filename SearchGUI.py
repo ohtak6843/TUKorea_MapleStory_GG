@@ -74,8 +74,8 @@ class SearchGUI:
         self.notebook.add(self.frame3, text="어빌리티")
 
         # 네번째 탭
-        self.frame3 = Frame(self.window)
-        self.notebook.add(self.frame3, text="성장치")
+        self.frame4 = Frame(self.window)
+        self.notebook.add(self.frame4, text="성장치")
 
 
     def statInfo(self):
@@ -101,6 +101,15 @@ class SearchGUI:
         for s, k in self.labels.items():
             k.pack()
 
+    def abilityInfo(self):
+        self.labels = {}
+        for s in self.mapleInfo.ability['ability_info']:
+            print(s['ability_value'])
+            self.labels[s['ability_value']] = Label(self.frame3, text=s['ability_value'])
+
+        for s, k in self.labels.items():
+            k.pack()
+
 
     def pressedSearchB(self):
         self.mapleInfo = MapleInfo(self.searchE.get())
@@ -119,6 +128,7 @@ class SearchGUI:
 
         self.statInfo()
         self.hyperStatInfo()
+        self.abilityInfo()
         return True
 
 
