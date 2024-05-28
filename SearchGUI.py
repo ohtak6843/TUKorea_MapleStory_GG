@@ -17,13 +17,15 @@ class SearchGUI:
         self.searchE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
         self.searchE.place(x=150, y=20, width=300, height=30)
         self.searchB = Button(self.window, text="검색", width=12, height=1, font=self.fontstyle2,
-                              command=self.pressedSearchB())
+                              command=self.pressedSearchB)
         self.searchB.place(x=450, y=20, height=30)
 
         self.window.mainloop()
 
     def pressedSearchB(self):
-        pass
+        self.mapleInfo = MapleInfo(self.searchE.get())
+        print(self.mapleInfo.basic)
 
 
-SearchGUI()
+if __name__ == "__main__":
+    SearchGUI()

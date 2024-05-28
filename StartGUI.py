@@ -30,3 +30,7 @@ class StartGUI():
 
     def pressedBMap(self):
         pass
+
+
+if __name__ == "__main__":
+    StartGUI()
