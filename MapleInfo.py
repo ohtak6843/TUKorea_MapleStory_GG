@@ -74,6 +74,14 @@ class MapleInfo:
 
         return self.ability
 
+
+    def setExpHistory(self):
+        pass
+
+
+    def setLevelHistory(self):
+        pass
+
 if __name__ == "__main__":
     c1 = MapleInfo("아델")
 
