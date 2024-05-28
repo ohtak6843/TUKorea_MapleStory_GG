@@ -104,7 +104,6 @@ class SearchGUI:
     def abilityInfo(self):
         self.labels = {}
         for s in self.mapleInfo.ability['ability_info']:
-            print(s['ability_value'])
             self.labels[s['ability_value']] = Label(self.frame3, text=s['ability_value'])
 
         for s, k in self.labels.items():
