@@ -125,6 +125,7 @@ class SearchGUI:
         im = Image.open(BytesIO(raw_data))
         image = ImageTk.PhotoImage(im, master=self.window)
         self.cImageLabel.configure(image=image)
+        self.cImageLabel.image = image
 
         self.statInfo()
         self.hyperStatInfo()
