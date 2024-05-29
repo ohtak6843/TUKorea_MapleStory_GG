@@ -206,14 +206,12 @@ class SearchGUI:
         password = "btlh gzhn xlrp ygya"  # 앱 비밀 번호
 
         # 보낼 내용
-        # result_text = 123123
-
-        # 이메일 메시지 설정
-        subject = "메이플 캐릭터 검색 결과"
-
         body = ''
         for s in self.mapleInfo.stat['final_stat']:
             body += s['stat_name'] + " : " + str(s['stat_value']) + '\n'
+
+        # 이메일 메시지 설정
+        subject = "메이플 캐릭터 검색 결과"
 
         message = MIMEMultipart()
         message["From"] = from_email
