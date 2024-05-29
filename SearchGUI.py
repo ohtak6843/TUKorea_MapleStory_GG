@@ -160,7 +160,11 @@ class SearchGUI:
 
         # 이메일 메시지 설정
         subject = "메이플 캐릭터 검색 결과"
-        body = "123111"
+
+        body = ''
+        for s in self.mapleInfo.stat['final_stat']:
+            body += s['stat_name'] + " : " + str(s['stat_value']) + '\n'
+
         message = MIMEMultipart()
         message["From"] = from_email
         message["To"] = to_email
