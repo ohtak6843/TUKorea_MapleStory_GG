@@ -52,11 +52,11 @@ class SearchGUI:
         self.createNoteBook()
 
         # 이메일 전송창
-        self.searchE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.searchE.place(x=150, y=self.ySize - 50, width=300, height=30)
-        self.searchB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
+        self.mailsearchE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        self.mailsearchE.place(x=150, y=self.ySize - 50, width=300, height=30)
+        self.mailsearchB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
                               command=self.pressedSendB)
-        self.searchB.place(x=450, y=self.ySize - 50, height=30)
+        self.mailsearchB.place(x=450, y=self.ySize - 50, height=30)
 
         self.window.mainloop()
 
