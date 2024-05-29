@@ -59,8 +59,13 @@ class SearchGUI:
         self.mailSendE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
         self.mailSendE.place(x=150, y=self.ySize - 50, width=300, height=30)
         self.mailSendB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
-                              command=self.pressedSendB)
+                                command=self.pressedSendB)
         self.mailSendB.place(x=450, y=self.ySize - 50, height=30)
+
+        width = self.notebook['width']
+        height = self.notebook['height']
+        self.levelHistoryC = Canvas(self.frame4, width=width, height=height)
+        self.levelHistoryC.pack()
 
         self.window.mainloop()
 
@@ -120,6 +125,50 @@ class SearchGUI:
         for s, k in self.labels.items():
             k.pack()
 
+    def historyInfo(self):
+        maxLevel = 300
+
+        width = self.notebook['width']
+        height = self.notebook['height']
+        self.levelHistoryC.delete('graph')
+
+        barWidth = 40
+
+        # 1월 데이터
+        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-01-01').basic['character_level']
+        self.levelHistoryC.create_text(width // 2 - 200, height - 50, text='2024-01-01', tags='graph')
+        self.levelHistoryC.create_text(width // 2 - 200, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
+        self.levelHistoryC.create_rectangle(width // 2 - 200 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
+                                width // 2 - 200 + barWidth // 2, height - 60, tags='graph')
+
+        # 2월 데이터
+        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-02-01').basic['character_level']
+        self.levelHistoryC.create_text(width // 2 - 100, height - 50, text='2024-02-01', tags='graph')
+        self.levelHistoryC.create_text(width // 2 - 100, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
+        self.levelHistoryC.create_rectangle(width // 2 - 100 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
+                                width // 2 - 100 + barWidth // 2, height - 60, tags='graph')
+
+        # 3월 데이터
+        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-03-01').basic['character_level']
+        self.levelHistoryC.create_text(width // 2, height - 50, text='2024-03-01', tags='graph')
+        self.levelHistoryC.create_text(width // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
+        self.levelHistoryC.create_rectangle(width // 2 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
+                                width // 2 + barWidth // 2, height - 60, tags='graph')
+
+        # 4월 데이터
+        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-04-01').basic['character_level']
+        self.levelHistoryC.create_text(width // 2 + 100, height - 50, text='2024-04-01', tags='graph')
+        self.levelHistoryC.create_text(width // 2 + 100, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
+        self.levelHistoryC.create_rectangle(width // 2 + 100 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
+                                width // 2 + 100 + barWidth // 2, height - 60, tags='graph')
+
+        # 5월 데이터
+        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-05-01').basic['character_level']
+        self.levelHistoryC.create_text(width // 2 + 200, height - 50, text='2024-05-01', tags='graph')
+        self.levelHistoryC.create_text(width // 2 + 200, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
+        self.levelHistoryC.create_rectangle(width // 2 + 200 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
+                                width // 2 + 200 + barWidth // 2, height - 60, tags='graph')
+
     def pressedSearchB(self):
         self.mapleInfo = MapleInfo(self.searchE.get())
         if self.mapleInfo.ocid == None:
@@ -140,6 +189,7 @@ class SearchGUI:
         self.statInfo()
         self.hyperStatInfo()
         self.abilityInfo()
+        self.historyInfo()
         return True
 
     def pressedSendB(self):
