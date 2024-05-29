@@ -51,6 +51,12 @@ class SearchGUI:
 
         self.createNoteBook()
 
+        # 이메일 전송창
+        self.searchE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        self.searchE.place(x=150, y=self.ySize - 50, width=300, height=30)
+        self.searchB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
+                              command=self.pressedSearchB)
+        self.searchB.place(x=450, y=self.ySize - 50, height=30)
 
         self.window.mainloop()
 
@@ -64,7 +70,6 @@ class SearchGUI:
         self.frame1 = Frame(self.window)
         self.notebook.add(self.frame1, text="스탯")
 
-
         # 두번째 탭
         self.frame2 = Frame(self.window)
         self.notebook.add(self.frame2, text="하이퍼스탯")
@@ -77,12 +82,12 @@ class SearchGUI:
         self.frame4 = Frame(self.window)
         self.notebook.add(self.frame4, text="성장치")
 
-
     def statInfo(self):
         # self.frame1
         self.labels = {}
         for s in self.mapleInfo.stat['final_stat']:
-            self.labels[s['stat_name']] = Label(self.frame1, text=s['stat_name'] + " : " + str(s['stat_value']), width=33)
+            self.labels[s['stat_name']] = Label(self.frame1, text=s['stat_name'] + " : " + str(s['stat_value']),
+                                                width=33)
 
         i = 0
         j = 0
@@ -96,7 +101,9 @@ class SearchGUI:
     def hyperStatInfo(self):
         self.labels = {}
         for s in self.mapleInfo.hyperStat['hyper_stat_preset_1']:
-            self.labels[s['stat_type']] = Label(self.frame2, text=s['stat_type'] + " : " + str(s['stat_level']) + "Lv   효과 : " + str(s['stat_increase']))
+            self.labels[s['stat_type']] = Label(self.frame2,
+                                                text=s['stat_type'] + " : " + str(s['stat_level']) + "Lv   효과 : " + str(
+                                                    s['stat_increase']))
 
         for s, k in self.labels.items():
             k.pack()
@@ -108,7 +115,6 @@ class SearchGUI:
 
         for s, k in self.labels.items():
             k.pack()
-
 
     def pressedSearchB(self):
         self.mapleInfo = MapleInfo(self.searchE.get())
@@ -131,6 +137,9 @@ class SearchGUI:
         self.hyperStatInfo()
         self.abilityInfo()
         return True
+
+    def pressedSendB(self):
+        pass
 
 
 if __name__ == "__main__":
