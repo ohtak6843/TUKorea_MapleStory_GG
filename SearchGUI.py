@@ -8,6 +8,10 @@ import urllib
 import urllib.request
 from PIL import Image, ImageTk
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from MapleInfo import *
 
 
@@ -52,11 +56,11 @@ class SearchGUI:
         self.createNoteBook()
 
         # 이메일 전송창
-        self.mailsearchE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.mailsearchE.place(x=150, y=self.ySize - 50, width=300, height=30)
-        self.mailsearchB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
+        self.mailSendE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        self.mailSendE.place(x=150, y=self.ySize - 50, width=300, height=30)
+        self.mailSendB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
                               command=self.pressedSendB)
-        self.mailsearchB.place(x=450, y=self.ySize - 50, height=30)
+        self.mailSendB.place(x=450, y=self.ySize - 50, height=30)
 
         self.window.mainloop()
 
@@ -139,7 +143,42 @@ class SearchGUI:
         return True
 
     def pressedSendB(self):
-        pass
+        to_email = self.mailSendE.get()
+        if self.mapleInfo.ocid == None:
+            messagebox.showinfo('ERROR', '캐릭터를 검색하세요')
+            return
+        if len(to_email) == 0:
+            messagebox.showinfo('ERROR', '이메일을 입력하세요')
+            return
+
+        # 이메일 설정
+        from_email = "ohtak6843@gmail.com"  # 보내는 이메일 주소
+        password = "btlh gzhn xlrp ygya"  # 앱 비밀 번호
+
+        # 보낼 내용
+        # result_text = 123123
+
+        # 이메일 메시지 설정
+        subject = "메이플 캐릭터 검색 결과"
+        body = "123111"
+        message = MIMEMultipart()
+        message["From"] = from_email
+        message["To"] = to_email
+        message["Subject"] = subject
+
+        message.attach(MIMEText(body, "plain"))
+
+        # SMTP 세션 설정 및 이메일 보내기
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+            server.login(from_email, password)
+            text = message.as_string()
+            server.sendmail(from_email, to_email, text)
+            server.quit()
+            messagebox.showinfo("성공", "이메일이 성공적으로 전송되었습니다.")
+        except smtplib.SMTPException as e:
+            messagebox.showerror("오류", f"이메일을 보내는 중 오류가 발생했습니다: {e}")
 
 
 if __name__ == "__main__":
