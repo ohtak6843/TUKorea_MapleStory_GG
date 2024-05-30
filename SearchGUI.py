@@ -16,7 +16,7 @@ from MapleInfo import *
 
 
 class SearchGUI:
-    xSize = 700
+    xSize = 600
     ySize = 850
 
     def __init__(self):
@@ -24,48 +24,56 @@ class SearchGUI:
         self.window.title('TMG')
         self.window.geometry(str(self.xSize) + 'x' + str(self.ySize))  # 화면 크기 지정
 
+        self.tempImage = Image.open("image/stat_image.png")
+        self.tempImage = self.tempImage.resize((self.xSize, self.ySize), Image.LANCZOS)
+        self.titleImage = ImageTk.PhotoImage(self.tempImage, master=self.window)
+        self.label = Label(self.window, image=self.titleImage)
+        self.label.pack()
+
         # 폰트 스타일
         self.fontstyle2 = font.Font(self.window, size=16, weight='bold', family='Consolas')
 
         # 검색창
         self.searchE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.searchE.place(x=150, y=20, width=300, height=30)
+        self.searchE.place(x=self.xSize//2 - 100 - 15, y=5, width=200, height=30)
+        self.searchE.insert(0,"캐릭터 명 입력")
         self.searchB = Button(self.window, text="검색", width=12, height=1, font=self.fontstyle2,
                               command=self.pressedSearchB)
-        self.searchB.place(x=450, y=20, height=30)
+        self.searchB.place(x=self.xSize//2 + 100 - 15, y=5,width=100, height=30)
 
         # 이름 출력
-        self.nameLabel = Label(self.window, text="이름: ", width=24, height=1, font=self.fontstyle2,
-                               highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.nameLabel.place(x=10, y=120)
-
-        # 레벨 출력
-        self.levelLabel = Label(self.window, text="레벨: ", width=24, height=1, font=self.fontstyle2,
-                                highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.levelLabel.place(x=10, y=160)
-
-        # 서버 출력
-        self.serverLabel = Label(self.window, text="서버: ", width=24, height=1, font=self.fontstyle2,
-                                 highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.serverLabel.place(x=10, y=200)
-
-        # 이미지 출력
-        self.cImageLabel = Label(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.cImageLabel.place(x=self.xSize - 170, y=100, width=160, height=160)
-
-        self.createNoteBook()
+        # self.nameLabel = Label(self.window, text="이름: ", width=24, height=1, font=self.fontstyle2,
+        #                        highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        # self.nameLabel.place(x=10, y=120)
+        #
+        # # 레벨 출력
+        # self.levelLabel = Label(self.window, text="레벨: ", width=24, height=1, font=self.fontstyle2,
+        #                         highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        # self.levelLabel.place(x=10, y=160)
+        #
+        # # 서버 출력
+        # self.serverLabel = Label(self.window, text="서버: ", width=24, height=1, font=self.fontstyle2,
+        #                          highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        # self.serverLabel.place(x=10, y=200)
+        #
+        # # 이미지 출력
+        # self.cImageLabel = Label(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        # self.cImageLabel.place(x=self.xSize - 170, y=100, width=160, height=160)
+        #
+        # self.createNoteBook()
 
         # 이메일 전송창
         self.mailSendE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.mailSendE.place(x=150, y=self.ySize - 50, width=300, height=30)
+        self.mailSendE.place(x=self.xSize//2 - 150 - 35, y=self.ySize - 35, width=300, height=30)
+        self.mailSendE.insert(0,"이메일 주소 입력")
         self.mailSendB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
                                 command=self.pressedSendB)
-        self.mailSendB.place(x=450, y=self.ySize - 50, height=30)
+        self.mailSendB.place(x=self.xSize//2 + 150 - 35, y=self.ySize - 35, width=100, height=30)
 
-        width = self.notebook['width']
-        height = self.notebook['height']
-        self.levelHistoryC = Canvas(self.frame4, width=width, height=height)
-        self.levelHistoryC.pack()
+        # width = self.notebook['width']
+        # height = self.notebook['height']
+        # self.levelHistoryC = Canvas(self.frame4, width=width, height=height)
+        # self.levelHistoryC.pack()
 
         self.window.mainloop()
 
