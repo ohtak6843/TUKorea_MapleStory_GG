@@ -18,64 +18,71 @@ from MapleInfo import *
 class SearchGUI:
     xSize = 600
     ySize = 850
+    characterInfo_size = (xSize, 250)
+    bar_size = (xSize, 30)
+    stat_size = (xSize, ySize - 250 - 30)
 
     def __init__(self):
         self.window = Tk()
         self.window.title('TMG')
         self.window.geometry(str(self.xSize) + 'x' + str(self.ySize))  # 화면 크기 지정
 
-        self.tempImage = Image.open("image/stat_image.png")
-        self.tempImage = self.tempImage.resize((self.xSize, self.ySize), Image.LANCZOS)
-        self.titleImage = ImageTk.PhotoImage(self.tempImage, master=self.window)
-        self.label = Label(self.window, image=self.titleImage)
-        self.label.pack()
+        self.characterInfo_print()
+        self.bar_print()
+        self.statUI_print()
 
         # 폰트 스타일
         self.fontstyle2 = font.Font(self.window, size=16, weight='bold', family='Consolas')
 
         # 검색창
         self.searchE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.searchE.place(x=self.xSize//2 - 100 - 15, y=5, width=200, height=30)
+        self.searchE.place(x=self.xSize//2 - 100 - 15, y=3, width=200, height=30)
         self.searchE.insert(0,"캐릭터 명 입력")
         self.searchB = Button(self.window, text="검색", width=12, height=1, font=self.fontstyle2,
                               command=self.pressedSearchB)
-        self.searchB.place(x=self.xSize//2 + 100 - 15, y=5,width=100, height=30)
+        self.searchB.place(x=self.xSize//2 + 100 - 15, y=3,width=100, height=30)
 
-        # 이름 출력
-        # self.nameLabel = Label(self.window, text="이름: ", width=24, height=1, font=self.fontstyle2,
-        #                        highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        # self.nameLabel.place(x=10, y=120)
-        #
-        # # 레벨 출력
-        # self.levelLabel = Label(self.window, text="레벨: ", width=24, height=1, font=self.fontstyle2,
-        #                         highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        # self.levelLabel.place(x=10, y=160)
-        #
-        # # 서버 출력
-        # self.serverLabel = Label(self.window, text="서버: ", width=24, height=1, font=self.fontstyle2,
-        #                          highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        # self.serverLabel.place(x=10, y=200)
-        #
-        # # 이미지 출력
-        # self.cImageLabel = Label(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        # self.cImageLabel.place(x=self.xSize - 170, y=100, width=160, height=160)
-        #
-        # self.createNoteBook()
 
-        # 이메일 전송창
+        """# 이메일 전송창
         self.mailSendE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
         self.mailSendE.place(x=self.xSize//2 - 150 - 35, y=self.ySize - 35, width=300, height=30)
         self.mailSendE.insert(0,"이메일 주소 입력")
         self.mailSendB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
                                 command=self.pressedSendB)
-        self.mailSendB.place(x=self.xSize//2 + 150 - 35, y=self.ySize - 35, width=100, height=30)
+        self.mailSendB.place(x=self.xSize//2 + 150 - 35, y=self.ySize - 35, width=100, height=30)"""
 
-        # width = self.notebook['width']
-        # height = self.notebook['height']
-        # self.levelHistoryC = Canvas(self.frame4, width=width, height=height)
-        # self.levelHistoryC.pack()
+
 
         self.window.mainloop()
+
+
+    def characterInfo_print(self): # 캐릭창 배경 출력
+        tempImage = Image.open("image/Character_info.png")
+        tempImage = tempImage.resize((self.xSize, self.characterInfo_size[1]), Image.LANCZOS)
+        titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
+
+        self.characterInfo_label = Label(self.window, image=titleImage, borderwidth=0)
+        self.characterInfo_label.image=titleImage
+        self.characterInfo_label.place(x=0, y=0)
+
+    def bar_print(self): # 찾고자 하는 캐릭 정보를 선택하는 부분 배경 출력
+        tempImage = Image.open("image/bar.png")
+        tempImage = tempImage.resize((self.xSize, self.bar_size[1]), Image.LANCZOS)
+        titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
+        self.bar_label = Label(self.window, image=titleImage, borderwidth=0)
+        self.bar_label.image = titleImage
+        y = self.characterInfo_size[1]
+        self.bar_label.place(x=0, y=y)
+
+    def statUI_print(self): # 캐릭터 정보 출력 배경
+        tempImage = Image.open("image/stat_UI.png")
+        tempImage = tempImage.resize((self.xSize, self.stat_size[1]), Image.LANCZOS)
+        titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
+
+        self.statUI_label = Label(self.window, image=titleImage, borderwidth=0)
+        self.statUI_label.image = titleImage
+        y = self.characterInfo_size[1] + self.bar_size[1]
+        self.statUI_label.place(x=0, y=y)
 
     # 노트북 생성 함수
     def createNoteBook(self):
