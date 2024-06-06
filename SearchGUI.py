@@ -22,6 +22,7 @@ class SearchGUI:
     bar_size = (xSize, 30)
     stat_size = (xSize, ySize - 250 - 30)
 
+
     def __init__(self):
         self.window = Tk()
         self.window.title('TMG')
@@ -43,6 +44,10 @@ class SearchGUI:
         self.searchB.place(x=self.xSize//2 + 100 - 15, y=3,width=100, height=30)
 
 
+        cImageLabel_bg = Label(self.window, bg="#c9ced0", width=30, height=11)
+        cImageLabel_bg.place(x=195, y=37)
+
+
         """# 이메일 전송창
         self.mailSendE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
         self.mailSendE.place(x=self.xSize//2 - 150 - 35, y=self.ySize - 35, width=300, height=30)
@@ -52,7 +57,7 @@ class SearchGUI:
         self.mailSendB.place(x=self.xSize//2 + 150 - 35, y=self.ySize - 35, width=100, height=30)"""
 
 
-
+        # self.characterInfoSearch() # 테스트 출력
         self.window.mainloop()
 
 
@@ -64,6 +69,45 @@ class SearchGUI:
         self.characterInfo_label = Label(self.window, image=titleImage, borderwidth=0)
         self.characterInfo_label.image=titleImage
         self.characterInfo_label.place(x=0, y=0)
+
+    def characterInfoSearch(self):
+
+        # 직업 리벨
+        self.classLabel = Label(self.window, text=str(self.mapleInfo.basic["character_class"]), bg='#9aa2ab', width=15)
+        self.classLabel.place(x=40, y=43)
+
+        # 유니온
+        self.unionLabel = Label(self.window, text=str(self.mapleInfo.union["union_level"]), bg='#c9ced0', width=5)
+        self.unionLabel.place(x=115, y=135)
+
+        # 무릉도장
+        self.Mu_Lung_Dojo = Label(self.window, text=str(self.mapleInfo.Mu_Lung_Dojo["dojang_best_floor"]), bg='#c9ced0', width=5)
+        self.Mu_Lung_Dojo.place(x=115, y=158)
+
+        # 인기도
+        self.unionLabel = Label(self.window, text=str(self.mapleInfo.popularity["popularity"]), bg='#c9ced0', width=5)
+        self.unionLabel.place(x=115, y=183)
+
+
+        # 길드
+        self.guildLabel = Label(self.window, text=str(self.mapleInfo.basic["character_guild_name"]), bg='#c9ced0', width=10)
+        self.guildLabel.place(x=493  , y=182)
+
+        # 이미지 출력
+        self.cImageLabel = Label(self.window, bg="#c9ced0")
+        self.cImageLabel.place(x=255, y=65)
+
+        # 이름 출력
+        self.nameLabel = Label(self.window, bg="#9aa2ab", text=str(self.mapleInfo.name), width=15)
+        self.nameLabel.place(x=245, y=170)
+
+        url = self.mapleInfo.basic['character_image']
+        with urllib.request.urlopen(url) as u:
+            raw_data = u.read()
+        im = Image.open(BytesIO(raw_data))
+        image = ImageTk.PhotoImage(im, master=self.window)
+        self.cImageLabel.configure(image=image)
+        self.cImageLabel.image = image
 
     def bar_print(self): # 찾고자 하는 캐릭 정보를 선택하는 부분 배경 출력
         tempImage = Image.open("image/bar.png")
@@ -189,22 +233,8 @@ class SearchGUI:
         if self.mapleInfo.ocid == None:
             messagebox.showinfo('ERROR', '존재하는 캐릭터가 없습니다.')
             return False
-        self.nameLabel.configure(text="이름: " + self.mapleInfo.name)
-        self.levelLabel.configure(text="레벨: " + str(self.mapleInfo.basic['character_level']))
-        self.serverLabel.configure(text="서버: " + self.mapleInfo.basic['world_name'])
 
-        url = self.mapleInfo.basic['character_image']
-        with urllib.request.urlopen(url) as u:
-            raw_data = u.read()
-        im = Image.open(BytesIO(raw_data))
-        image = ImageTk.PhotoImage(im, master=self.window)
-        self.cImageLabel.configure(image=image)
-        self.cImageLabel.image = image
-
-        self.statInfo()
-        self.hyperStatInfo()
-        self.abilityInfo()
-        self.historyInfo()
+        self.characterInfoSearch()
         return True
 
     def pressedSendB(self):

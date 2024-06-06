@@ -20,6 +20,10 @@ class MapleInfo:
         self.stat = self.setStat(self.ocid, date)
         self.hyperStat = self.setHyperStat(self.ocid, date)
         self.ability = self.setAbility(self.ocid, date)
+        self.union = self.setUnion(self.ocid, date)
+        self.Mu_Lung_Dojo = self.setMu_Lung_Dojo(self.ocid, date)
+        self.popularity = self.setPopularity(self.ocid, date)
+
 
     def setOcid(self, name=None):
         if name == None: return None
@@ -83,6 +87,35 @@ class MapleInfo:
     def setLevelHistory(self):
         pass
 
+    def setUnion(self, ocid=None, date=None):
+        if ocid == None:
+            return None
+        urlString = "https://open.api.nexon.com/maplestory/v1/user/union?ocid=" + ocid
+        if date != None:
+            urlString += "&date=" + date
+        response = requests.get(urlString, headers=headers)
+
+        return response.json()
+
+    def setMu_Lung_Dojo(self, ocid=None, date=None):
+        if ocid == None:
+            return None
+        urlString = "https://open.api.nexon.com/maplestory/v1/character/dojang?ocid=" + ocid
+        if date != None:
+            urlString += "&date=" + date
+        response = requests.get(urlString, headers=headers)
+
+        return response.json()
+
+    def setPopularity(self, ocid=None, date=None):
+        if ocid == None:
+            return None
+        urlString = "https://open.api.nexon.com/maplestory/v1/character/popularity?ocid=" + ocid
+        if date != None:
+            urlString += "&date=" + date
+        response = requests.get(urlString, headers=headers)
+
+        return response.json()
 
 if __name__ == "__main__":
     c1 = MapleInfo("아델")
@@ -91,3 +124,6 @@ if __name__ == "__main__":
     print(c1.stat)
     print(c1.hyperStat)
     print(c1.ability)
+    print(c1.union)
+    print(c1.Mu_Lung_Dojo)
+    print(c1.popularity)
