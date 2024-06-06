@@ -44,7 +44,7 @@ class SearchGUI:
         self.searchB.place(x=self.xSize//2 + 100 - 15, y=3,width=100, height=30)
 
 
-        cImageLabel_bg = Label(self.window, bg="#c9ced0", width=30, height=11)
+        cImageLabel_bg = Label(self.characterInfo_frame, bg="#c9ced0", width=30, height=11)
         cImageLabel_bg.place(x=195, y=37)
 
 
@@ -66,11 +66,12 @@ class SearchGUI:
         tempImage = tempImage.resize((self.xSize, self.characterInfo_size[1]), Image.LANCZOS)
         titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
 
-        self.characterInfo_label = Label(self.window, image=titleImage, borderwidth=0)
+        self.characterInfo_frame = Frame(self.window).pack()
+        self.characterInfo_label = Label(self.characterInfo_frame, image=titleImage, borderwidth=0)
         self.characterInfo_label.image=titleImage
         self.characterInfo_label.place(x=0, y=0)
 
-    def characterInfoSearch(self):
+    def characterInfoSearch(self): # 검색한 캐릭터 정보 출력
 
         # 직업 리벨
         self.classLabel = Label(self.window, text=str(self.mapleInfo.basic["character_class"]), bg='#9aa2ab', width=15)
@@ -113,7 +114,9 @@ class SearchGUI:
         tempImage = Image.open("image/bar.png")
         tempImage = tempImage.resize((self.xSize, self.bar_size[1]), Image.LANCZOS)
         titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
-        self.bar_label = Label(self.window, image=titleImage, borderwidth=0)
+
+        self.bar_frame = Frame(self.window).pack()
+        self.bar_label = Label(self.bar_frame, image=titleImage, borderwidth=0)
         self.bar_label.image = titleImage
         y = self.characterInfo_size[1]
         self.bar_label.place(x=0, y=y)
@@ -123,7 +126,8 @@ class SearchGUI:
         tempImage = tempImage.resize((self.xSize, self.stat_size[1]), Image.LANCZOS)
         titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
 
-        self.statUI_label = Label(self.window, image=titleImage, borderwidth=0)
+        self.statUI_frame = Frame(self.window).pack()
+        self.statUI_label = Label(self.statUI_frame, image=titleImage, borderwidth=0)
         self.statUI_label.image = titleImage
         y = self.characterInfo_size[1] + self.bar_size[1]
         self.statUI_label.place(x=0, y=y)
