@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import font
 from PIL import ImageTk, Image
 from SearchGUI import *
+from MapGUI import *
 
 class TitleGUI:
     xSize = 800
