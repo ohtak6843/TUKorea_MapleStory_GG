@@ -44,8 +44,11 @@ class SearchGUI:
         self.searchB.place(x=self.xSize//2 + 100 - 15, y=3,width=100, height=30)
 
 
+
         cImageLabel_bg = Label(self.characterInfo_frame, bg="#c9ced0", width=30, height=11)
         cImageLabel_bg.place(x=195, y=37)
+
+        self.bar_button()
 
 
         """# 이메일 전송창
@@ -62,44 +65,47 @@ class SearchGUI:
 
 
     def characterInfo_print(self): # 캐릭창 배경 출력
-        tempImage = Image.open("image/Character_info.png")
-        tempImage = tempImage.resize((self.xSize, self.characterInfo_size[1]), Image.LANCZOS)
-        titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
+        # 프레임 설정
+        self.characterInfo_frame = Frame(self.window, width=self.characterInfo_size[0], height=self.characterInfo_size[1])
+        self.characterInfo_frame.place(x=0, y=0)
 
-        self.characterInfo_frame = Frame(self.window).pack()
-        self.characterInfo_label = Label(self.characterInfo_frame, image=titleImage, borderwidth=0)
-        self.characterInfo_label.image=titleImage
+        # 이미지 설정
+        tempImage = Image.open("image/Character_info.png")
+        tempImage = tempImage.resize((self.characterInfo_size[0], self.characterInfo_size[1]), Image.LANCZOS)
+        mainImage = ImageTk.PhotoImage(tempImage, master=self.characterInfo_frame)
+        self.characterInfo_label = Label(self.characterInfo_frame, image=mainImage, borderwidth=0)
+        self.characterInfo_label.image=mainImage
         self.characterInfo_label.place(x=0, y=0)
 
     def characterInfoSearch(self): # 검색한 캐릭터 정보 출력
 
         # 직업 리벨
-        self.classLabel = Label(self.window, text=str(self.mapleInfo.basic["character_class"]), bg='#9aa2ab', width=15)
+        self.classLabel = Label(self.characterInfo_frame, text=str(self.mapleInfo.basic["character_class"]), bg='#9aa2ab', width=15)
         self.classLabel.place(x=40, y=43)
 
         # 유니온
-        self.unionLabel = Label(self.window, text=str(self.mapleInfo.union["union_level"]), bg='#c9ced0', width=5)
+        self.unionLabel = Label(self.characterInfo_frame, text=str(self.mapleInfo.union["union_level"]), bg='#c9ced0', width=5)
         self.unionLabel.place(x=115, y=135)
 
         # 무릉도장
-        self.Mu_Lung_Dojo = Label(self.window, text=str(self.mapleInfo.Mu_Lung_Dojo["dojang_best_floor"]), bg='#c9ced0', width=5)
+        self.Mu_Lung_Dojo = Label(self.characterInfo_frame, text=str(self.mapleInfo.Mu_Lung_Dojo["dojang_best_floor"]), bg='#c9ced0', width=5)
         self.Mu_Lung_Dojo.place(x=115, y=158)
 
         # 인기도
-        self.unionLabel = Label(self.window, text=str(self.mapleInfo.popularity["popularity"]), bg='#c9ced0', width=5)
+        self.unionLabel = Label(self.characterInfo_frame, text=str(self.mapleInfo.popularity["popularity"]), bg='#c9ced0', width=5)
         self.unionLabel.place(x=115, y=183)
 
 
         # 길드
-        self.guildLabel = Label(self.window, text=str(self.mapleInfo.basic["character_guild_name"]), bg='#c9ced0', width=10)
+        self.guildLabel = Label(self.characterInfo_frame, text=str(self.mapleInfo.basic["character_guild_name"]), bg='#c9ced0', width=10)
         self.guildLabel.place(x=493  , y=182)
 
         # 이미지 출력
-        self.cImageLabel = Label(self.window, bg="#c9ced0")
+        self.cImageLabel = Label(self.characterInfo_frame, bg="#c9ced0")
         self.cImageLabel.place(x=255, y=65)
 
         # 이름 출력
-        self.nameLabel = Label(self.window, bg="#9aa2ab", text=str(self.mapleInfo.name), width=15)
+        self.nameLabel = Label(self.characterInfo_frame, bg="#9aa2ab", text=str(self.mapleInfo.name), width=15)
         self.nameLabel.place(x=245, y=170)
 
         url = self.mapleInfo.basic['character_image']
@@ -111,26 +117,38 @@ class SearchGUI:
         self.cImageLabel.image = image
 
     def bar_print(self): # 찾고자 하는 캐릭 정보를 선택하는 부분 배경 출력
-        tempImage = Image.open("image/bar.png")
-        tempImage = tempImage.resize((self.xSize, self.bar_size[1]), Image.LANCZOS)
-        titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
-
-        self.bar_frame = Frame(self.window).pack()
-        self.bar_label = Label(self.bar_frame, image=titleImage, borderwidth=0)
-        self.bar_label.image = titleImage
+        # 프레임 설정
         y = self.characterInfo_size[1]
-        self.bar_label.place(x=0, y=y)
+        self.bar_frame = Frame(self.window, width=self.bar_size[0], height=self.bar_size[1])
+        self.bar_frame.place(x=0, y=y)
+        
+        # 이미지 레이블 출력
+        tempImage = Image.open("image/bar.png")
+        tempImage = tempImage.resize((self.bar_size[0], self.bar_size[1]), Image.LANCZOS)
+        mainImage = ImageTk.PhotoImage(tempImage, master=self.bar_frame)
+        self.bar_label = Label(self.bar_frame, image=mainImage, borderwidth=0)
+        self.bar_label.image = mainImage
+        self.bar_label.place(x=0, y=0)
+
+    def bar_button(self):
+        #테스트
+        b = Button(self.bar_frame, text="스탯")
+        b.place(x=0, y=0)
+
 
     def statUI_print(self): # 캐릭터 정보 출력 배경
-        tempImage = Image.open("image/stat_UI.png")
-        tempImage = tempImage.resize((self.xSize, self.stat_size[1]), Image.LANCZOS)
-        titleImage = ImageTk.PhotoImage(tempImage, master=self.window)
-
-        self.statUI_frame = Frame(self.window).pack()
-        self.statUI_label = Label(self.statUI_frame, image=titleImage, borderwidth=0)
-        self.statUI_label.image = titleImage
+        # 프레임 설정
         y = self.characterInfo_size[1] + self.bar_size[1]
-        self.statUI_label.place(x=0, y=y)
+        self.statUI_frame = Frame(self.window, width=self.stat_size[0], height=self.stat_size[1])
+        self.statUI_frame.place(x=0, y=y)
+
+        tempImage = Image.open("image/stat_UI.png")
+        tempImage = tempImage.resize((self.stat_size[0], self.stat_size[1]), Image.LANCZOS)
+        mainImage = ImageTk.PhotoImage(tempImage, master=self.window)
+
+        self.statUI_label = Label(self.statUI_frame, image=mainImage, borderwidth=0)
+        self.statUI_label.image = mainImage
+        self.statUI_label.place(x=0, y=0)
 
     # 노트북 생성 함수
     def createNoteBook(self):
