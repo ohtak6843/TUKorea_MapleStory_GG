@@ -21,12 +21,15 @@ class SearchGUI:
     characterInfo_size = (xSize, 250)
     bar_size = (xSize, 30)
     stat_size = (xSize, ySize - 250 - 30)
+    hyperStat_size = (xSize // 2, ySize - 250)
+    ability_size = (xSize // 2, 250)
 
 
     def __init__(self):
         self.window = Tk()
         self.window.title('TMG')
         self.window.geometry(str(self.xSize) + 'x' + str(self.ySize))  # 화면 크기 지정
+        self.windowsSize_toogle = [False, False] #0번은 하이퍼, 1번은 어빌창이 켜져있는지 확인
 
         self.characterInfo_print()
         self.bar_print()
@@ -49,7 +52,6 @@ class SearchGUI:
         cImageLabel_bg.place(x=195, y=37)
 
         self.bar_button()
-
 
         """# 이메일 전송창
         self.mailSendE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
@@ -131,9 +133,11 @@ class SearchGUI:
         self.bar_label.place(x=0, y=0)
 
     def bar_button(self):
-        #테스트
-        b = Button(self.bar_frame, text="스탯")
-        b.place(x=0, y=0)
+        bStat = Button(self.bar_frame, text="하이퍼 스탯", command=self.hyperStat_print)
+        bStat.place(x=18, y=5)
+
+        bHStat = Button(self.bar_frame, text="어빌리티", command=self.ability_UI_print)
+        bHStat.place(x=100, y=5)
 
 
     def statUI_print(self): # 캐릭터 정보 출력 배경
@@ -142,6 +146,8 @@ class SearchGUI:
         self.statUI_frame = Frame(self.window, width=self.stat_size[0], height=self.stat_size[1])
         self.statUI_frame.place(x=0, y=y)
 
+
+        # 이미지 출력
         tempImage = Image.open("image/stat_UI.png")
         tempImage = tempImage.resize((self.stat_size[0], self.stat_size[1]), Image.LANCZOS)
         mainImage = ImageTk.PhotoImage(tempImage, master=self.window)
@@ -150,27 +156,47 @@ class SearchGUI:
         self.statUI_label.image = mainImage
         self.statUI_label.place(x=0, y=0)
 
-    # 노트북 생성 함수
-    def createNoteBook(self):
-        # 노트북
-        self.notebook = tkinter.ttk.Notebook(self.window, width=self.xSize - 20, height=int(self.ySize / 2) + 50)
-        self.notebook.place(x=10, y=int(self.ySize / 2) - 100)
+    def winResize(self): # 하이퍼 스탯이나 어빌리티 창이 켜져있는지 안켜져있는지 확인 후에 윈도우 크기를 설정한다.
+        if True in self.windowsSize_toogle:
+            self.window.geometry(str(self.xSize+self.hyperStat_size[0]) + 'x' + str(self.ySize))
+            return
 
-        # 첫번째 탭
-        self.frame1 = Frame(self.window)
-        self.notebook.add(self.frame1, text="스탯")
+        self.window.geometry(str(self.xSize) + 'x' + str(self.ySize))
 
-        # 두번째 탭
-        self.frame2 = Frame(self.window)
-        self.notebook.add(self.frame2, text="하이퍼스탯")
+    def hyperStat_print(self):
+        self.windowsSize_toogle[0] = not self.windowsSize_toogle[0]
+        self.winResize()
 
-        # 세번째 탭
-        self.frame3 = Frame(self.window)
-        self.notebook.add(self.frame3, text="어빌리티")
+        y = self.characterInfo_size[1]
+        self.hyperstatUI_frame = Frame(self.window, width=self.hyperStat_size[0], height=self.hyperStat_size[1])
+        self.hyperstatUI_frame.place(x=self.stat_size[0], y=y)
 
-        # 네번째 탭
-        self.frame4 = Frame(self.window)
-        self.notebook.add(self.frame4, text="성장치")
+        # 하이퍼 스탯
+        if self.windowsSize_toogle[0]:
+            tempImage = Image.open("image/hyper_stat_Ui.png")
+            tempImage = tempImage.resize((self.hyperStat_size[0], self.hyperStat_size[1]), Image.LANCZOS)
+            mainImage = ImageTk.PhotoImage(tempImage, master=self.hyperstatUI_frame)
+
+            self.hyperstatUI_label = Label(self.hyperstatUI_frame, image=mainImage, borderwidth=0)
+            self.hyperstatUI_label.image = mainImage
+            self.hyperstatUI_label.place(x=0, y=0)
+
+    def ability_UI_print(self):
+        self.windowsSize_toogle[1] = not self.windowsSize_toogle[1]
+        self.winResize()
+
+        self.abilityUI_frame = Frame(self.window, width=self.ability_size[0], height=self.ability_size[1])
+        self.abilityUI_frame.place(x=self.stat_size[0], y=0)
+
+        # 하이퍼 스탯
+        if self.windowsSize_toogle[1]:
+            tempImage = Image.open("image/Ability_UI.png")
+            tempImage = tempImage.resize((self.ability_size[0], self.ability_size[1]), Image.LANCZOS)
+            mainImage = ImageTk.PhotoImage(tempImage, master=self.abilityUI_frame)
+
+            self.abilityUI_label = Label(self.abilityUI_frame, image=mainImage, borderwidth=0)
+            self.abilityUI_label.image = mainImage
+            self.abilityUI_label.place(x=0, y=0)
 
     def statInfo(self):
         # self.frame1
