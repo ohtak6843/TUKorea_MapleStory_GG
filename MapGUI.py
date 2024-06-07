@@ -9,7 +9,21 @@ import requests
 class App(tkinter.Tk):
     APP_NAME = "map_view_demo.py"
     WIDTH = 800
-    HEIGHT = 750
+    HEIGHT = 650
+
+    # 공공데이터 API 키
+    api_key = "PKGFCGC1GAJJBXm5h13NotLREkhRZqXdj3rBL7VIoq+cZa9ub4MXTnCiZNYRk9StuDZfvgMZ7oLn3BKVZV2OPg=="
+
+    # 시흥시 PC방 현황
+    url = "https://api.odcloud.kr/api/15104288/v1/uddi:1a1728ba-a31a-4b5c-a04f-aafc37f0b10e"
+    params = {
+        "serviceKey": api_key,
+        "page": 1,
+        "perPage": 1000,
+        "returnType": "JSON"
+    }
+    response = requests.get(url, params=params)
+    items = response.json()['data']
 
     def __init__(self, *args, **kwargs):
         tkinter.Tk.__init__(self, *args, **kwargs)
@@ -36,40 +50,22 @@ class App(tkinter.Tk):
         self.search_bar_button = tkinter.Button(master=self, width=8, text="Search", command=self.search)
         self.search_bar_button.grid(row=0, column=1, pady=10, padx=10)
 
-        self.search_bar_clear = tkinter.Button(master=self, width=8, text="Clear", command=self.clear)
-        self.search_bar_clear.grid(row=0, column=2, pady=10, padx=10)
+        self.pc_room_list = tkinter.Listbox(self, width=20, height=500)
+        self.pc_room_list.grid(row=1, column=3, pady=10, padx=10)
 
-        self.map_widget = TkinterMapView(width=self.WIDTH, height=600, corner_radius=0)
+        self.map_widget = TkinterMapView(width=600, height=600, corner_radius=0)
         self.map_widget.grid(row=1, column=0, columnspan=3, sticky="nsew")
 
-        self.marker_list_box = tkinter.Listbox(self, height=8)
-        self.marker_list_box.grid(row=2, column=0, columnspan=1, sticky="ew", padx=10, pady=10)
-
-        self.listbox_button_frame = tkinter.Frame(master=self)
-        self.listbox_button_frame.grid(row=2, column=1, sticky="nsew", columnspan=2)
-
-        self.listbox_button_frame.grid_columnconfigure(0, weight=1)
-
-        self.save_marker_button = tkinter.Button(master=self.listbox_button_frame, width=20, text="save current marker",
-                                                 command=self.save_marker)
-        self.save_marker_button.grid(row=0, column=0, pady=10, padx=10)
-
-        self.clear_marker_button = tkinter.Button(master=self.listbox_button_frame, width=20, text="clear marker list",
-                                                  command=self.clear_marker_list)
-        self.clear_marker_button.grid(row=1, column=0, pady=10, padx=10)
-
-        self.connect_marker_button = tkinter.Button(master=self.listbox_button_frame, width=20,
-                                                    text="connect marker with path",
-                                                    command=self.connect_marker)
-        self.connect_marker_button.grid(row=2, column=0, pady=10, padx=10)
-
-        self.map_widget.set_address("NYC")
+        self.map_widget.set_address("시흥시")
 
         self.marker_list = []
-        self.marker_path = None
-
         self.search_marker = None
         self.search_in_progress = False
+
+        self.getData()
+        for pc_room in self.pc_rooms:
+            self.pc_room_list.insert(tkinter.END, f"{pc_room["상호"]}")
+
 
         self.mainloop()
 
@@ -86,69 +82,26 @@ class App(tkinter.Tk):
                 self.search_marker = None
             self.search_in_progress = False
 
-    def save_marker(self):
-        if self.search_marker is not None:
-            self.marker_list_box.insert(tkinter.END, f" {len(self.marker_list)}. {self.search_marker.text} ")
-            self.marker_list_box.see(tkinter.END)
-            self.marker_list.append(self.search_marker)
-
-    def clear_marker_list(self):
-        for marker in self.marker_list:
-            self.map_widget.delete(marker)
-
-        self.marker_list_box.delete(0, tkinter.END)
-        self.marker_list.clear()
-        self.connect_marker()
-
-    def connect_marker(self):
-        print(self.marker_list)
-        position_list = []
-
-        for marker in self.marker_list:
-            position_list.append(marker.position)
-
-        if self.marker_path is not None:
-            self.map_widget.delete(self.marker_path)
-
-        if len(position_list) > 0:
-            self.marker_path = self.map_widget.set_path(position_list)
-
-    def clear(self):
-        self.search_bar.delete(0, last=tkinter.END)
-        self.map_widget.delete(self.search_marker)
-
     def on_closing(self, event=0):
         self.destroy()
         exit()
 
+    def getData(self):
+        # pc방 데이터 받기
+        self.pc_rooms = []
+        for item in self.items:
+            if item["업종명"] == None or item["업종명"] != "인터넷컴퓨터게임시설제공업":
+                continue
+            pc_room = {
+                "업종명": item["업종명"],
+                "등록(신고)번호": item["등록(신고)번호"],
+                "등록(신고)일자": item["등록(신고)일자"],
+                "상호": item['상호'],
+                "영업소소재지(도로명)": item["영업소소재지(도로명)"],
+                "영업소소재지(지번)": item["영업소소재지(지번)"]
+            }
+            self.pc_rooms.append(pc_room)
+
 
 if __name__ == "__main__":
-    # app = App()
-
-    # 공공데이터 API 키
-    api_key = 'PKGFCGC1GAJJBXm5h13NotLREkhRZqXdj3rBL7VIoq+cZa9ub4MXTnCiZNYRk9StuDZfvgMZ7oLn3BKVZV2OPg=='
-
-    # 서울시 용산구 PC방 현황
-    url = "https://api.odcloud.kr/api/3077839/v1/uddi:20f437b7-92fe-4624-8c5a-b2f136085bfe"
-    params = {
-        "serviceKey": api_key,
-        "page": 1,
-        "perpage": 100,
-        "returnType": "JSON"
-    }
-    response = requests.get(url, params=params)
-    items = response.json()['data']
-
-    pc_rooms = []
-    for item in items:
-        pc_room = {
-            "연번": item['연번'],
-            "업종명": item['업종명'],
-            "상호": item['상호'],
-            "영업소소재지(도로명)": item['영업소소재지(도로명)'],
-            "데이터기준일자": item['데이터기준일자']
-        }
-        pc_rooms.append(pc_room)
-
-    for pc_room in pc_rooms:
-        print(pc_room)
+    app = App()
