@@ -21,8 +21,8 @@ class SearchGUI:
     characterInfo_size = (xSize, 250)
     bar_size = (xSize, 30)
     stat_size = (xSize, ySize - 250 - 30)
-    hyperStat_size = (xSize // 2, ySize - 250)
-    ability_size = (xSize // 2, 250)
+    hyperStat_size = (xSize // 2 + 50, ySize - 250)
+    ability_size = (xSize // 2 + 50, 250)
     hyperStatlist = ['STR', 'DEX', 'INT', 'LUK', 'HP', 'MP', 'DF/TF/PP', '크리티컬 확률', '크리티컬 데미지', '방어율 무시',
                      '데미지', '보스 몬스터 공격 시 데미지 증가', '일반 몬스터 공격 시 데미지 증가', '상태 이상 내성', '공격력/마력', '획득 경험치', '아케인포스']
 
@@ -203,6 +203,8 @@ class SearchGUI:
             self.abilityUI_label.image = mainImage
             self.abilityUI_label.place(x=0, y=0)
 
+            self.abilityInfo()
+
     def statInfo(self):
         # self.frame1
         self.labels = {}
@@ -226,22 +228,35 @@ class SearchGUI:
             return
 
         self.labels = {}
-        for s in self.mapleInfo.hyperStat['hyper_stat_preset_1']:
+        for s in self.mapleInfo.hyperStat['hyper_stat_preset_'+self.mapleInfo.hyperStat['use_preset_no']]:
             self.labels[s['stat_type']] = s['stat_level']
 
         for i, type in enumerate(self.hyperStatlist):
             t = Label(self.hyperstatUI_frame, text=str(self.labels[type]), bg="#86939f", fg="#c8d6dc", font=('',13))
-            t.place(x=250, y=55+ (31 * i))
+            t.place(x=300, y=55+ (31 * i))
 
 
 
     def abilityInfo(self):
-        self.labels = {}
-        for s in self.mapleInfo.ability['ability_info']:
-            self.labels[s['ability_value']] = Label(self.frame3, text=s['ability_value'])
+        if self.mapleInfo == None: # 검색된 캐릭터가 없다면 출력을 하지 않는다.
+            return
+        if self.windowsSize_toogle[1] == False: # 어빌리티 창이 꺼져있다면 출력을 하지 않는다.
+            return
 
-        for s, k in self.labels.items():
-            k.pack()
+        self.labels = {}
+        for i, s in enumerate(self.mapleInfo.ability['ability_info']):
+            color = '#86939f'
+            if s['ability_grade'] == '레전드리':
+                color = '#9aba09'
+            elif s['ability_grade'] == '유니크':
+                color = '#f0ad0d'
+            elif s['ability_grade'] == '에픽':
+                color = '#7961cb'
+            elif s['ability_grade'] == '레어':
+                color = '#31abc8'
+
+            t = Label(self.abilityUI_frame, text=s['ability_value'], bg=color, relief='solid', width=46, height=3)
+            t.place(x=12, y= 80 + (i*50))
 
     def historyInfo(self):
         maxLevel = 300
@@ -296,6 +311,7 @@ class SearchGUI:
 
         self.characterInfoSearch()
         self.hyperStatInfo()
+        self.abilityInfo()
         return True
 
     def pressedSendB(self):
