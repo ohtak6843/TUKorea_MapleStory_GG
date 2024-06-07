@@ -23,13 +23,15 @@ class SearchGUI:
     stat_size = (xSize, ySize - 250 - 30)
     hyperStat_size = (xSize // 2, ySize - 250)
     ability_size = (xSize // 2, 250)
-
+    hyperStatlist = ['STR', 'DEX', 'INT', 'LUK', 'HP', 'MP', 'DF/TF/PP', '크리티컬 확률', '크리티컬 데미지', '방어율 무시',
+                     '데미지', '보스 몬스터 공격 시 데미지 증가', '일반 몬스터 공격 시 데미지 증가', '상태 이상 내성', '공격력/마력', '획득 경험치', '아케인포스']
 
     def __init__(self):
         self.window = Tk()
         self.window.title('TMG')
         self.window.geometry(str(self.xSize) + 'x' + str(self.ySize))  # 화면 크기 지정
         self.windowsSize_toogle = [False, False] #0번은 하이퍼, 1번은 어빌창이 켜져있는지 확인
+        self.mapleInfo = None # 초기화
 
         self.characterInfo_print()
         self.bar_print()
@@ -80,6 +82,8 @@ class SearchGUI:
         self.characterInfo_label.place(x=0, y=0)
 
     def characterInfoSearch(self): # 검색한 캐릭터 정보 출력
+        if self.mapleInfo == None:
+            return
 
         # 직업 리벨
         self.classLabel = Label(self.characterInfo_frame, text=str(self.mapleInfo.basic["character_class"]), bg='#9aa2ab', width=15)
@@ -139,7 +143,6 @@ class SearchGUI:
         bHStat = Button(self.bar_frame, text="어빌리티", command=self.ability_UI_print)
         bHStat.place(x=100, y=5)
 
-
     def statUI_print(self): # 캐릭터 정보 출력 배경
         # 프레임 설정
         y = self.characterInfo_size[1] + self.bar_size[1]
@@ -181,6 +184,8 @@ class SearchGUI:
             self.hyperstatUI_label.image = mainImage
             self.hyperstatUI_label.place(x=0, y=0)
 
+            self.hyperStatInfo()
+
     def ability_UI_print(self):
         self.windowsSize_toogle[1] = not self.windowsSize_toogle[1]
         self.winResize()
@@ -215,14 +220,20 @@ class SearchGUI:
                 j += 1
 
     def hyperStatInfo(self):
+        if self.mapleInfo == None: # 검색된 캐릭터가 없다면 출력을 하지 않는다.
+            return
+        if self.windowsSize_toogle[0] == False: # 하이퍼 스탯창이 꺼져있다면 출력을 하지 않는다.
+            return
+
         self.labels = {}
         for s in self.mapleInfo.hyperStat['hyper_stat_preset_1']:
-            self.labels[s['stat_type']] = Label(self.frame2,
-                                                text=s['stat_type'] + " : " + str(s['stat_level']) + "Lv   효과 : " + str(
-                                                    s['stat_increase']))
+            self.labels[s['stat_type']] = s['stat_level']
 
-        for s, k in self.labels.items():
-            k.pack()
+        for i, type in enumerate(self.hyperStatlist):
+            t = Label(self.hyperstatUI_frame, text=str(self.labels[type]), bg="#86939f", fg="#c8d6dc", font=('',13))
+            t.place(x=250, y=55+ (31 * i))
+
+
 
     def abilityInfo(self):
         self.labels = {}
@@ -279,10 +290,12 @@ class SearchGUI:
     def pressedSearchB(self):
         self.mapleInfo = MapleInfo(self.searchE.get())
         if self.mapleInfo.ocid == None:
+            self.mapleInfo = None
             messagebox.showinfo('ERROR', '존재하는 캐릭터가 없습니다.')
             return False
 
         self.characterInfoSearch()
+        self.hyperStatInfo()
         return True
 
     def pressedSendB(self):
