@@ -6,6 +6,8 @@ from geopy.geocoders import Nominatim
 
 import requests
 
+from teller import *
+
 
 class App(tkinter.Tk):
     APP_NAME = "map_view_demo.py"
@@ -73,6 +75,18 @@ class App(tkinter.Tk):
             self.pc_room_list.insert(tkinter.END, f"{pc_room["상호"]}")
             self.pc_rooms_sub.append(pc_room)
 
+        today = date.today()
+        current_month = today.strftime('%Y%m')
+
+        print('[', today, ']received token :', noti.TOKEN)
+
+        self.bot = telepot.Bot(noti.TOKEN)
+        pprint(self.bot.getMe())
+
+        self.bot.message_loop(self.manage)
+
+        print('Listening...')
+
         self.mainloop()
 
     def search(self, event=None):
@@ -120,7 +134,8 @@ class App(tkinter.Tk):
                 address.replace(',', '')
                 position = self.geocoding(address)
                 overlayText = self.geocoding_reverse(str(position[0]) + ', ' + str(position[1]))
-                self.search_marker = self.map_widget.set_position(position[0], position[1], marker=True, text=overlayText)
+                self.search_marker = self.map_widget.set_position(position[0], position[1], marker=True,
+                                                                  text=overlayText)
                 self.map_widget.set_zoom(16)
 
                 return True
@@ -159,6 +174,41 @@ class App(tkinter.Tk):
         address = geo_local.reverse(lat_lng_str)
 
         return address
+
+    def manage(self, msg):
+        content_type, chat_type, chat_id = telepot.glance(msg)
+        if content_type != 'text':
+            noti.sendMessage(chat_id, '난 텍스트 이외의 메시지는 처리하지 못해요.')
+            return
+
+        text = msg['text']
+        args = text.split(' ')
+
+        if text.startswith('상호'):
+            self.reply(chat_id, text)
+        elif text.startswith('주소'):
+            self.reply(chat_id, text)
+        else:
+            noti.sendMessage(chat_id, '모르는 명령어입니다.\n상호 [상호명], 주소 [도로명주소 or 지번주소] 중 하나의 명령을 입력하세요.')
+
+    def reply(self, user, command):
+        data = command[3:]
+        msg = ''
+        idx = 1
+        for pc_room in self.pc_rooms:
+            if data in pc_room["상호"] or data in pc_room["영업소소재지(도로명)"] or data in pc_room["영업소소재지(지번)"]:
+                r = str(idx) + '. ' + pc_room["상호"] + ' / ' + pc_room["영업소소재지(도로명)"]
+                idx += 1
+                if len(r + msg) + 1 > noti.MAX_MSG_LENGTH:
+                    noti.sendMessage(user, msg)
+                    msg = r + '\n'
+                else:
+                    msg += r + '\n'
+
+        if msg:
+            noti.sendMessage(user, msg)
+        else:
+            noti.sendMessage(user, "데이터가 없습니다.")
 
 
 if __name__ == "__main__":
