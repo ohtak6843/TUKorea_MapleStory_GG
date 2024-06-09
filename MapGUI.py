@@ -9,7 +9,7 @@ import requests
 from teller import *
 
 
-class App(tkinter.Tk):
+class MapGUI(tkinter.Tk):
     APP_NAME = "map_view_demo.py"
     WIDTH = 800
     HEIGHT = 650
@@ -27,6 +27,8 @@ class App(tkinter.Tk):
     }
     response = requests.get(url, params=params)
     items = response.json()['data']
+
+    geo_local = Nominatim(user_agent='South Korea', timeout=None)
 
     def __init__(self, *args, **kwargs):
         tkinter.Tk.__init__(self, *args, **kwargs)
@@ -59,7 +61,7 @@ class App(tkinter.Tk):
         self.pc_room_select_button = tkinter.Button(self, text='select', width=20, height=1, command=self.list_select)
         self.pc_room_select_button.grid(row=3, column=0, pady=10, padx=10)
 
-        self.map_widget = TkinterMapView(width=600, height=600, corner_radius=0)
+        self.map_widget = TkinterMapView(self, width=600, height=600, corner_radius=0)
         self.map_widget.grid(row=1, rowspan=3, column=1, columnspan=3, sticky="nsew")
 
         self.map_widget.set_address("시흥시")
@@ -159,19 +161,17 @@ class App(tkinter.Tk):
         return True
 
     def geocoding(self, address):
-        geo_local = Nominatim(user_agent='South Korea', timeout=None)
         try:
-            geo = geo_local.geocode(address)
+            geo = self.geo_local.geocode(address)
             x, y = [geo.latitude, geo.longitude]
             return x, y
         except:
-            geo = geo_local.geocode('시흥시')
+            geo = self.geo_local.geocode('시흥시')
             x, y = [geo.latitude, geo.longitude]
             return x, y
 
     def geocoding_reverse(self, lat_lng_str):
-        geo_local = Nominatim(user_agent='South Korea', timeout=None)
-        address = geo_local.reverse(lat_lng_str)
+        address = self.geo_local.reverse(lat_lng_str)
 
         return address
 
@@ -212,4 +212,4 @@ class App(tkinter.Tk):
 
 
 if __name__ == "__main__":
-    app = App()
+    MapGUI()

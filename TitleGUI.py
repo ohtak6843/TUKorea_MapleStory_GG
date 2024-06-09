@@ -33,7 +33,7 @@ class TitleGUI:
         SearchGUI()
 
     def pressedBMap(self):
-        pass
+        MapGUI()
 
 
 if __name__ == "__main__":
