@@ -2,9 +2,9 @@ import requests
 
 headers = {
     # 오현택
-    "x-nxopen-api-key": "test_9392c67b8e3b9222db966f58be5b70297ee60e6180d5d3b6f11cae8d38de16ccefe8d04e6d233bd35cf2fabdeb93fb0d"
+    # "x-nxopen-api-key": "test_9392c67b8e3b9222db966f58be5b70297ee60e6180d5d3b6f11cae8d38de16ccefe8d04e6d233bd35cf2fabdeb93fb0d"
     # 박우진
-    # "x-nxopen-api-key": "test_fcbb644b0795b15c260e79b797ec02e806a33c2ce838123d345055cccda69e185ac61399047147932c90a12d833bc382"
+    "x-nxopen-api-key": "test_fcbb644b0795b15c260e79b797ec02e806a33c2ce838123d345055cccda69e185ac61399047147932c90a12d833bc382"
 }
 
 
@@ -120,7 +120,7 @@ class MapleInfo:
 if __name__ == "__main__":
     c1 = MapleInfo("아델")
 
-    print(c1.basic)
+    print(c1.basic['character_exp_rate'])
     print(c1.stat)
     print(c1.hyperStat)
     print(c1.ability)

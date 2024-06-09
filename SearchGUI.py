@@ -14,6 +14,8 @@ from email.mime.text import MIMEText
 
 from MapleInfo import *
 
+import spam
+
 
 class SearchGUI:
     xSize = 600
@@ -142,6 +144,9 @@ class SearchGUI:
 
         bHStat = Button(self.bar_frame, text="어빌리티", command=self.ability_UI_print)
         bHStat.place(x=100, y=5)
+
+        bHistory = Button(self.bar_frame, text="성장치", command=self.historyInfo)
+        bHistory.place(x=166, y=5)
 
     def statUI_print(self): # 캐릭터 정보 출력 배경
         # 프레임 설정
@@ -294,8 +299,6 @@ class SearchGUI:
                       bg="#6c7785", fg='#F8FFFF', font=('', 11), width=27, anchor="w")
             t.place(x=300, y=455 + (i * 30))
 
-
-
     def hyperStatInfo(self):
         if self.mapleInfo == None: # 검색된 캐릭터가 없다면 출력을 하지 않는다.
             return
@@ -309,8 +312,6 @@ class SearchGUI:
         for i, type in enumerate(self.hyperStatlist):
             t = Label(self.hyperstatUI_frame, text=str(hyperStatTypeList[type]), bg="#86939f", fg="#c8d6dc", font=('',13), width=2, anchor="e")
             t.place(x=300, y=55+ (31 * i))
-
-
 
     def abilityInfo(self):
         if self.mapleInfo == None: # 검색된 캐릭터가 없다면 출력을 하지 않는다.
@@ -333,48 +334,32 @@ class SearchGUI:
             t.place(x=12, y= 80 + (i*50))
 
     def historyInfo(self):
-        maxLevel = 300
+        if self.mapleInfo == None:
+            pass
 
-        width = self.notebook['width']
-        height = self.notebook['height']
-        self.levelHistoryC.delete('graph')
+        w = 600
+        h = 400
 
-        barWidth = 40
+        self.window2 = Tk()
+        self.window2.title("경험치 그래프")
+        self.window2.geometry(str(w)+"x"+str(h))
 
-        # 1월 데이터
-        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-01-01').basic['character_level']
-        self.levelHistoryC.create_text(width // 2 - 200, height - 50, text='2024-01-01', tags='graph')
-        self.levelHistoryC.create_text(width // 2 - 200, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
-        self.levelHistoryC.create_rectangle(width // 2 - 200 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
-                                width // 2 - 200 + barWidth // 2, height - 60, tags='graph')
+        self.levelHistoryC = Canvas(self.window2, width=w, height=h)
+        self.levelHistoryC.place(x=0, y=0)
 
-        # 2월 데이터
-        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-02-01').basic['character_level']
-        self.levelHistoryC.create_text(width // 2 - 100, height - 50, text='2024-02-01', tags='graph')
-        self.levelHistoryC.create_text(width // 2 - 100, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
-        self.levelHistoryC.create_rectangle(width // 2 - 100 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
-                                width // 2 - 100 + barWidth // 2, height - 60, tags='graph')
+        for i in range(1, 7 + 1):
+            day = spam.date(i)
+            t = MapleInfo(self.mapleInfo.basic['character_name'], day)
+            if t != None:
+                rate = t.basic['character_exp_rate']
+                self.levelHistoryC.create_rectangle(30 + ((i-1) * 100),
+                                                    (h - 60) * (1 -  (float(rate) / 100)),
+                                                    30 + ((i-1)*100) + 50,
+                                                    h - 60, fill='#8dd28d')
 
-        # 3월 데이터
-        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-03-01').basic['character_level']
-        self.levelHistoryC.create_text(width // 2, height - 50, text='2024-03-01', tags='graph')
-        self.levelHistoryC.create_text(width // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
-        self.levelHistoryC.create_rectangle(width // 2 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
-                                width // 2 + barWidth // 2, height - 60, tags='graph')
+                self.levelHistoryC.create_text(55 + ((i-1) * 100),  h - 45, text=day)
+                self.levelHistoryC.create_text(55 + ((i - 1) * 100), h - 25, text=rate +"%")
 
-        # 4월 데이터
-        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-04-01').basic['character_level']
-        self.levelHistoryC.create_text(width // 2 + 100, height - 50, text='2024-04-01', tags='graph')
-        self.levelHistoryC.create_text(width // 2 + 100, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
-        self.levelHistoryC.create_rectangle(width // 2 + 100 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
-                                width // 2 + 100 + barWidth // 2, height - 60, tags='graph')
-
-        # 5월 데이터
-        nowLevel = MapleInfo(self.mapleInfo.basic['character_name'], '2024-05-01').basic['character_level']
-        self.levelHistoryC.create_text(width // 2 + 200, height - 50, text='2024-05-01', tags='graph')
-        self.levelHistoryC.create_text(width // 2 + 200, height - 20 - 0.9 * nowLevel * (height / maxLevel) - 10, text=nowLevel, tags='graph')
-        self.levelHistoryC.create_rectangle(width // 2 + 200 - barWidth // 2, height - 20 - 0.9 * nowLevel * (height / maxLevel),
-                                width // 2 + 200 + barWidth // 2, height - 60, tags='graph')
 
     def pressedSearchB(self):
         self.mapleInfo = MapleInfo(self.searchE.get())
