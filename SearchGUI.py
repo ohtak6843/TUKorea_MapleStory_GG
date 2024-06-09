@@ -58,13 +58,7 @@ class SearchGUI:
         # 버튼 출력(하이퍼, 어빌, 성장치)
         self.bar_button()
 
-        """# 이메일 전송창
-        self.mailSendE = Entry(self.window, highlightcolor='black', highlightbackground='black', highlightthickness=2)
-        self.mailSendE.place(x=self.xSize//2 - 150 - 35, y=self.ySize - 35, width=300, height=30)
-        self.mailSendE.insert(0,"이메일 주소 입력")
-        self.mailSendB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
-                                command=self.pressedSendB)
-        self.mailSendB.place(x=self.xSize//2 + 150 - 35, y=self.ySize - 35, width=100, height=30)"""
+
 
         # self.characterInfoSearch() # 테스트 출력
         self.window.mainloop()
@@ -148,6 +142,22 @@ class SearchGUI:
         bHistory = Button(self.bar_frame, text="성장치", command=self.historyInfo)
         bHistory.place(x=166, y=5)
 
+        bEmail = Button(self.bar_frame, text="이메일", command=self.email)
+        bEmail.place(x=220, y=5)
+
+    def email(self):
+        self.window3 = Tk()
+        self.window3.title("이메일 전송")
+        self.window3.geometry("400x150")  # 화면 크기 지정
+
+        # 이메일 전송창
+        self.mailSendE = Entry(self.window3, highlightcolor='black', highlightbackground='black', highlightthickness=2)
+        self.mailSendE.place(x=0, y=50, width=300, height=30)
+        self.mailSendE.insert(0,"이메일 주소 입력")
+        self.mailSendB = Button(self.window3, text="전송", width=12, height=1, font=self.fontstyle2,
+                                command=self.pressedSendB)
+        self.mailSendB.place(x=310, y=50, width=100, height=30)
+
     def statUI_print(self): # 캐릭터 정보 출력 배경
         # 프레임 설정
         y = self.characterInfo_size[1] + self.bar_size[1]
@@ -221,35 +231,41 @@ class SearchGUI:
         t = Label(self.statUI_frame, text=str(format(int(statTypeList['전투력']),',')), bg="#3e6076", fg='#d2e9ed', width=28, font=('', 20))
         t.place(x=100, y=20)
 
-        # 힘
-        t = Label(self.statUI_frame,
-                  text="STR : " + str(format(int(statTypeList['STR']), ',')),
+        # Lv
+        t = Label(self.statUI_frame, text="Lv : " + str(self.mapleInfo.basic['character_level']),
                   bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
         t.place(x=30, y=75)
-
-        # 덱
-        t = Label(self.statUI_frame,
-                  text="DEX : " + str(format(int(statTypeList['DEX']), ',')),
-                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
-        t.place(x=300, y=75)
-
-        # 인
-        t = Label(self.statUI_frame,
-                  text="INT : " + str(format(int(statTypeList['INT']), ',')),
-                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
-        t.place(x=30, y=110)
-
-        # 럭
-        t = Label(self.statUI_frame,
-                  text="LUK : " + str(format(int(statTypeList['LUK']), ',')),
-                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
-        t.place(x=300, y=110)
 
         # HP
         t = Label(self.statUI_frame,
                   text="HP  : " + str(format(int(statTypeList['HP']), ',')),
                   bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=300, y=75)
+
+        # 힘
+        t = Label(self.statUI_frame,
+                  text="STR : " + str(format(int(statTypeList['STR']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=30, y=110)
+
+        # 덱
+        t = Label(self.statUI_frame,
+                  text="DEX : " + str(format(int(statTypeList['DEX']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=300, y=110)
+
+        # 인
+        t = Label(self.statUI_frame,
+                  text="INT : " + str(format(int(statTypeList['INT']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
         t.place(x=30, y=145)
+
+        # 럭
+        t = Label(self.statUI_frame,
+                  text="LUK : " + str(format(int(statTypeList['LUK']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=300, y=145)
+
 
         list1 = ['최대 스탯공격력', '최종 데미지', '방어율 무시', '공격력', '마력', '재사용 대기시간 감소 (초)', '재사용 대기시간 감소 (%)', '재사용 대기시간 미적용']
         list2 = ['데미지', '보스 몬스터 데미지', '일반 몬스터 데미지', '상태이상 추가 데미지', '크리티컬 확률', '크리티컬 데미지', '버프 지속시간', '속성 내성 무시']

@@ -120,7 +120,7 @@ class MapleInfo:
 if __name__ == "__main__":
     c1 = MapleInfo("아델")
 
-    print(c1.basic['character_exp_rate'])
+    print(c1.basic)
     print(c1.stat)
     print(c1.hyperStat)
     print(c1.ability)
