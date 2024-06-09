@@ -49,10 +49,11 @@ class SearchGUI:
         self.searchB.place(x=self.xSize//2 + 100 - 15, y=3,width=100, height=30)
 
 
-
+        # 캐릭터 이미지
         cImageLabel_bg = Label(self.characterInfo_frame, bg="#c9ced0", width=30, height=11)
         cImageLabel_bg.place(x=195, y=37)
 
+        # 버튼 출력(하이퍼, 어빌, 성장치)
         self.bar_button()
 
         """# 이메일 전송창
@@ -62,7 +63,6 @@ class SearchGUI:
         self.mailSendB = Button(self.window, text="전송", width=12, height=1, font=self.fontstyle2,
                                 command=self.pressedSendB)
         self.mailSendB.place(x=self.xSize//2 + 150 - 35, y=self.ySize - 35, width=100, height=30)"""
-
 
         # self.characterInfoSearch() # 테스트 출력
         self.window.mainloop()
@@ -206,20 +206,95 @@ class SearchGUI:
             self.abilityInfo()
 
     def statInfo(self):
-        # self.frame1
-        self.labels = {}
+        if self.mapleInfo == None:  # 검색된 캐릭터가 없다면 출력을 하지 않는다.
+            return
+        # 필요한 데이터만 뽑아서 statTypeList에 저장.
+        statTypeList = {}
         for s in self.mapleInfo.stat['final_stat']:
-            self.labels[s['stat_name']] = Label(self.frame1, text=s['stat_name'] + " : " + str(s['stat_value']),
-                                                width=33)
+            statTypeList[s['stat_name']] = s['stat_value']
 
-        i = 0
-        j = 0
-        for s, k in self.labels.items():
-            k.grid(row=i, column=j)
-            i += 1
-            if i == 15:
-                i = 0
-                j += 1
+        t = Label(self.statUI_frame, text=str(format(int(statTypeList['전투력']),',')), bg="#3e6076", fg='#d2e9ed', width=28, font=('', 20))
+        t.place(x=100, y=20)
+
+        # 힘
+        t = Label(self.statUI_frame,
+                  text="STR : " + str(format(int(statTypeList['STR']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=30, y=75)
+
+        # 덱
+        t = Label(self.statUI_frame,
+                  text="DEX : " + str(format(int(statTypeList['DEX']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=300, y=75)
+
+        # 인
+        t = Label(self.statUI_frame,
+                  text="INT : " + str(format(int(statTypeList['INT']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=30, y=110)
+
+        # 럭
+        t = Label(self.statUI_frame,
+                  text="LUK : " + str(format(int(statTypeList['LUK']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=300, y=110)
+
+        # HP
+        t = Label(self.statUI_frame,
+                  text="HP  : " + str(format(int(statTypeList['HP']), ',')),
+                  bg="#8d97a4", fg='#F8FFFF', font=('', 13), width=27, anchor="w")
+        t.place(x=30, y=145)
+
+        list1 = ['최대 스탯공격력', '최종 데미지', '방어율 무시', '공격력', '마력', '재사용 대기시간 감소 (초)', '재사용 대기시간 감소 (%)', '재사용 대기시간 미적용']
+        list2 = ['데미지', '보스 몬스터 데미지', '일반 몬스터 데미지', '상태이상 추가 데미지', '크리티컬 확률', '크리티컬 데미지', '버프 지속시간', '속성 내성 무시']
+        list3 = ['메소 획득량', '아이템 드롭률', '추가 경험치 획득']
+        list4 = ['스타포스', '아케인포스', '어센틱포스']
+
+        # list1 목록 출력
+        for i, s in enumerate(list1):
+            if s == '최대 스탯공격력' or s == '공격력' or s == '마력':
+                fs = str(format(int(statTypeList[s]) ,','))
+                t = Label(self.statUI_frame,
+                          text=s + ' : ' + fs,
+                          bg="#6c7785", fg='#F8FFFF', font=('', 11), width=27, anchor="w")
+
+            elif s == '재사용 대기시간 감소 (초)':
+                t = Label(self.statUI_frame,
+                        text = s + ' : ' + statTypeList[s] + '초',
+                        bg = "#6c7785", fg = '#F8FFFF', font = ('', 11), width=27, anchor="w")
+
+            else:
+                t = Label(self.statUI_frame,
+                          text=s + ' : ' + statTypeList[s] + '%',
+                          bg="#6c7785", fg='#F8FFFF', font=('', 11), width=27, anchor="w")
+
+            t.place(x=30, y=205 + (i*27))
+
+
+        #list2 목록 출력
+        for i, s in enumerate(list2):
+            t = Label(self.statUI_frame,
+                      text=s + ' : ' + statTypeList[s] + '%',
+                      bg="#6c7785", fg='#F8FFFF', font=('', 11), width=27, anchor="w")
+            t.place(x=300, y=205 + (i * 27))
+
+        # list3 목록 출력
+        for i, s in enumerate(list3):
+            t = Label(self.statUI_frame,
+                      text=s + ' : ' + statTypeList[s] + '%',
+                      bg="#6c7785", fg='#F8FFFF', font=('', 11), width=27, anchor="w")
+            t.place(x=30, y=455 + (i * 30))
+
+        # list4 목록 출력
+        for i, s in enumerate(list4):
+            fs = str(format(int(statTypeList[s]), ','))
+            t = Label(self.statUI_frame,
+                      text=s + ' : ' + fs,
+                      bg="#6c7785", fg='#F8FFFF', font=('', 11), width=27, anchor="w")
+            t.place(x=300, y=455 + (i * 30))
+
+
 
     def hyperStatInfo(self):
         if self.mapleInfo == None: # 검색된 캐릭터가 없다면 출력을 하지 않는다.
@@ -227,12 +302,12 @@ class SearchGUI:
         if self.windowsSize_toogle[0] == False: # 하이퍼 스탯창이 꺼져있다면 출력을 하지 않는다.
             return
 
-        self.labels = {}
+        hyperStatTypeList = {}
         for s in self.mapleInfo.hyperStat['hyper_stat_preset_'+self.mapleInfo.hyperStat['use_preset_no']]:
-            self.labels[s['stat_type']] = s['stat_level']
+            hyperStatTypeList[s['stat_type']] = s['stat_level']
 
         for i, type in enumerate(self.hyperStatlist):
-            t = Label(self.hyperstatUI_frame, text=str(self.labels[type]), bg="#86939f", fg="#c8d6dc", font=('',13))
+            t = Label(self.hyperstatUI_frame, text=str(hyperStatTypeList[type]), bg="#86939f", fg="#c8d6dc", font=('',13), width=2, anchor="e")
             t.place(x=300, y=55+ (31 * i))
 
 
@@ -243,7 +318,6 @@ class SearchGUI:
         if self.windowsSize_toogle[1] == False: # 어빌리티 창이 꺼져있다면 출력을 하지 않는다.
             return
 
-        self.labels = {}
         for i, s in enumerate(self.mapleInfo.ability['ability_info']):
             color = '#86939f'
             if s['ability_grade'] == '레전드리':
@@ -312,6 +386,7 @@ class SearchGUI:
         self.characterInfoSearch()
         self.hyperStatInfo()
         self.abilityInfo()
+        self.statInfo()
         return True
 
     def pressedSendB(self):
