@@ -1,12 +1,15 @@
 import sys
 import tkinter
 import tkinter.messagebox
-from tkintermapview import TkinterMapView
 from geopy.geocoders import Nominatim
 
 import requests
 
 from teller import *
+
+from PIL import Image, ImageTk
+import io
+from googlemaps import Client
 
 
 class MapGUI(tkinter.Tk):
@@ -29,6 +32,11 @@ class MapGUI(tkinter.Tk):
     items = response.json()['data']
 
     geo_local = Nominatim(user_agent='South Korea', timeout=None)
+
+    # Google Maps API 클라이언트 생성 (한달에 $20 까지 무료)
+    # https://console.cloud.google.com/apis/credentials
+    Google_API_Key = 'AIzaSyCzFgc9OGnXckq1-JNhSCVGo9zIq1kSWcE'
+    gmaps = Client(key=Google_API_Key)
 
     def __init__(self, *args, **kwargs):
         tkinter.Tk.__init__(self, *args, **kwargs)
@@ -61,12 +69,27 @@ class MapGUI(tkinter.Tk):
         self.pc_room_select_button = tkinter.Button(self, text='select', width=20, height=1, command=self.list_select)
         self.pc_room_select_button.grid(row=3, column=0, pady=10, padx=10)
 
-        self.map_widget = TkinterMapView(self, width=600, height=600, corner_radius=0)
-        self.map_widget.grid(row=1, rowspan=3, column=1, columnspan=3, sticky="nsew")
+        self.zoom = 13
+        self.position = self.gmaps.geocode("시흥시")[0]['geometry']['location']
+        self.map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.position['lat']},{self.position['lng']}&zoom={self.zoom}&size=600x500&maptype=roadmap"
 
-        self.map_widget.set_address("시흥시")
+        self.marker_url = f"&markers=color:red%7C{self.position['lat']},{self.position['lng']}"
+        self.map_url += self.marker_url
 
-        self.marker_list = []
+        response = requests.get(self.map_url + '&key=' + self.Google_API_Key)
+        image = Image.open(io.BytesIO(response.content))
+        photo = ImageTk.PhotoImage(image, master=self)
+        self.map_label = tkinter.Label(self, width=600, height=33)
+        self.map_label.grid(row=1, rowspan=2, column=1, columnspan=3, sticky="nsew")
+        self.map_label.configure(image=photo)
+        self.map_label.image = photo
+
+        self.plusZoom = tkinter.Button(self, text='+', width=10, height=1, command=self.zoomin)
+        self.plusZoom.grid(row=3, column=2, pady=10, padx=10, sticky="se")
+
+        self.minusZoom = tkinter.Button(self, text='-', width=10, height=1, command=self.zoomout)
+        self.minusZoom.grid(row=3, column=3, pady=10, padx=10, sticky="se")
+
         self.search_marker = None
         self.search_in_progress = False
 
@@ -94,8 +117,6 @@ class MapGUI(tkinter.Tk):
     def search(self, event=None):
         if not self.search_in_progress:
             self.search_in_progress = True
-            if self.search_marker not in self.marker_list:
-                self.map_widget.delete(self.search_marker)
 
             self.setList()
             if self.search_marker is False:
@@ -134,11 +155,17 @@ class MapGUI(tkinter.Tk):
                 tad = [i for i in pc_room["영업소소재지(도로명)"].split()]
                 address = tad[1] + ' ' + tad[2] + ' ' + tad[3]
                 address.replace(',', '')
-                position = self.geocoding(address)
-                overlayText = self.geocoding_reverse(str(position[0]) + ', ' + str(position[1]))
-                self.search_marker = self.map_widget.set_position(position[0], position[1], marker=True,
-                                                                  text=overlayText)
-                self.map_widget.set_zoom(16)
+                self.position = self.gmaps.geocode(address)[0]['geometry']['location']
+                self.map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.position['lat']},{self.position['lng']}&zoom={self.zoom}&size=600x600&maptype=roadmap"
+
+                self.marker_url = f"&markers=color:red%7C{self.position['lat']},{self.position['lng']}"
+                self.map_url += self.marker_url
+
+                response = requests.get(self.map_url + '&key=' + self.Google_API_Key)
+                image = Image.open(io.BytesIO(response.content))
+                photo = ImageTk.PhotoImage(image, master=self)
+                self.map_label.configure(image=photo)
+                self.map_label.image = photo
 
                 return True
 
@@ -209,6 +236,33 @@ class MapGUI(tkinter.Tk):
             noti.sendMessage(user, msg)
         else:
             noti.sendMessage(user, "데이터가 없습니다.")
+
+    def zoomin(self):
+        self.zoom += 1
+
+        self.map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.position['lat']},{self.position['lng']}&zoom={self.zoom}&size=600x600&maptype=roadmap"
+        self.marker_url = f"&markers=color:red%7C{self.position['lat']},{self.position['lng']}"
+        self.map_url += self.marker_url
+
+        response = requests.get(self.map_url + '&key=' + self.Google_API_Key)
+        image = Image.open(io.BytesIO(response.content))
+        photo = ImageTk.PhotoImage(image, master=self)
+        self.map_label.configure(image=photo)
+        self.map_label.image = photo
+
+    def zoomout(self):
+        if self.zoom > 1:
+            self.zoom -= 1
+
+        self.map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.position['lat']},{self.position['lng']}&zoom={self.zoom}&size=600x600&maptype=roadmap"
+        self.marker_url = f"&markers=color:red%7C{self.position['lat']},{self.position['lng']}"
+        self.map_url += self.marker_url
+
+        response = requests.get(self.map_url + '&key=' + self.Google_API_Key)
+        image = Image.open(io.BytesIO(response.content))
+        photo = ImageTk.PhotoImage(image, master=self)
+        self.map_label.configure(image=photo)
+        self.map_label.image = photo
 
 
 if __name__ == "__main__":
