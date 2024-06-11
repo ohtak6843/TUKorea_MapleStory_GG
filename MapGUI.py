@@ -97,7 +97,7 @@ class MapGUI(tkinter.Tk):
 
         self.getData()
         for pc_room in self.pc_rooms:
-            self.pc_room_list.insert(tkinter.END, f"{pc_room["상호"]}")
+            self.pc_room_list.insert(tkinter.END, f"{pc_room['상호']}")
             self.pc_rooms_sub.append(pc_room)
 
         today = date.today()
@@ -175,14 +175,14 @@ class MapGUI(tkinter.Tk):
         word = self.search_bar.get()
         if len(word) == 0:
             for pc_room in self.pc_rooms:
-                self.pc_room_list.insert(tkinter.END, f"{pc_room["상호"]}")
+                self.pc_room_list.insert(tkinter.END, f"{pc_room['상호']}")
                 self.pc_rooms_sub.append(pc_room)
 
             return False
 
         for pc_room in self.pc_rooms:
             if word in pc_room["상호"] or word in pc_room["영업소소재지(도로명)"] or word in pc_room["영업소소재지(지번)"]:
-                self.pc_room_list.insert(tkinter.END, f"{pc_room["상호"]}")
+                self.pc_room_list.insert(tkinter.END, f"{pc_room['상호']}")
                 self.pc_rooms_sub.append(pc_room)
 
         return True
